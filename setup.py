@@ -19,13 +19,11 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Framework :: Pytest"
+        "Framework :: Pytest",
     ],
-    py_modules=['pytest_codecarbon'],
+    py_modules=["pytest_codecarbon"],
     python_requires=">=3.6",
-    install_requires = ['pytest',
-                    'codecarbon'
-                    ],
+    install_requires=["pytest", "codecarbon"],
+    tests_require=["pandas"]
     entry_points={"pytest11": ["codecarbon=pytest_codecarbon"]},
 )
-

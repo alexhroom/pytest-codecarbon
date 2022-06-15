@@ -1,0 +1,26 @@
+name: Testing
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.6", "3.8", "3.10"]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies and module
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install pytest pytest_cases
+        python3 -m pip install .
+    - name: Run pytest (on mock tests then actual tests)
+      run: |
+        python3 -m pytest --carbon tests/test_mocks.py
+        python3 -m pytest tests/test_codecarbon.py
+
