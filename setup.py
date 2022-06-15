@@ -24,6 +24,6 @@ setuptools.setup(
     py_modules=["pytest_codecarbon"],
     python_requires=">=3.6",
     install_requires=["pytest", "codecarbon"],
-    tests_require=["pandas"]
+    tests_require=["pandas"],
     entry_points={"pytest11": ["codecarbon=pytest_codecarbon"]},
 )
