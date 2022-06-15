@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pytest-codecarbon",
-    version="0.0.1",
+    version="1.0.0",
     author="Alex H. Room",
     author_email="alex.room@btinternet.com",
     description="Pytest plugin for measuring carbon emissions",
@@ -22,8 +22,11 @@ setuptools.setup(
         "Framework :: Pytest",
     ],
     py_modules=["pytest_codecarbon"],
-    python_requires=">=3.6",
-    install_requires=["pytest", "codecarbon"],
-    tests_require=["pandas"],
+    python_requires=">3.6",
+    install_requires=[
+        "pytest",
+        "codecarbon",
+        "pandas",
+    ],
     entry_points={"pytest11": ["codecarbon=pytest_codecarbon"]},
 )

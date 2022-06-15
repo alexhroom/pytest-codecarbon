@@ -36,15 +36,16 @@ class Carbon(object):
         df = pd.read_csv(f"{self.dir}/emissions.csv")
 
         # add row of 0's at top to buffer the diff
-        df = pd.concat([pd.DataFrame([0]*df.shape[1], index=df.columns).T, df], axis=0)
-        for col in ['duration', 'emissions', 'ram_energy', 'energy_consumed']:
+        df = pd.concat(
+            [pd.DataFrame([0] * df.shape[1], index=df.columns).T, df], axis=0
+        )
+        for col in ["duration", "emissions", "ram_energy", "energy_consumed"]:
             df[col] = df[col].diff()
         # drop buffer row
-        df = df.iloc[1: , :]
+        df = df.iloc[1:, :]
 
-        with open(f"{self.dir}/emissions.csv", 'w', encoding='utf-8') as file:
+        with open(f"{self.dir}/emissions.csv", "w", encoding="utf-8") as file:
             file.write(df.to_csv())
-
 
     @pytest.hookimpl(hookwrapper=True)
     def pytest_runtest_protocol(self, item, nextitem):
@@ -55,6 +56,7 @@ class Carbon(object):
         self.tracker.start()
         yield
         self.tracker.stop()
+
 
 def pytest_addoption(parser):
     """Pytest option hook for pytest-codecarbon"""
