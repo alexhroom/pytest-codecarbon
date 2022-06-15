@@ -10,6 +10,7 @@ class Carbon(object):
     def __init__(self, dir):
         self.dir = dir
         self.tracker = None
+        self.testnames = []
 
     def pytest_sessionstart(self, session):
         """Runs at the start of the test session."""
@@ -21,26 +22,23 @@ class Carbon(object):
         # instead of instantiating a tracker for each test, we instantiate it once
         # then use find and replace to fill in the names for each test
         self.tracker = EmissionsTracker(
-            project_name="#TESTNAME#", output_dir=self.dir, log_level="critical"
+            project_name="###", output_dir=self.dir, log_level="critical"
         )
 
     def pytest_sessionfinish(self, session):
         """Runs at the end of the test session."""
         pass
+        
 
     @pytest.hookimpl(hookwrapper=True)
     def pytest_runtest_protocol(self, item, nextitem):
         """Hook wrapper around each Pytest test."""
+        # access internal attribute so we can change project name
+        # for each test without re-instantiating the tracker
+        self.tracker._project_name = item.name
         self.tracker.start()
         yield
         self.tracker.stop()
-        with open(f"{self.dir}/emissions.csv", "r", encoding="utf-8") as file:
-            data = file.read()
-            data = data.replace("#TESTNAME#", item.name)
-
-        with open(f"{self.dir}/emissions.csv", "w", encoding="utf-8") as file:
-            file.write(data)
-
 
 def pytest_addoption(parser):
     """Pytest option hook for pytest-codecarbon"""
