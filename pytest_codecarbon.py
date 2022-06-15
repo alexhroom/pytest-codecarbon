@@ -1,6 +1,11 @@
+"""
+Hooks for pytest-codecarbon, a pytest plugin measuring carbon output
+from your code
+"""
 import os
 
 import pytest
+import pandas as pd
 from codecarbon import EmissionsTracker
 
 
@@ -27,8 +32,19 @@ class Carbon(object):
 
     def pytest_sessionfinish(self, session):
         """Runs at the end of the test session."""
-        pass
-        
+        # we want to change cumulative values to individual values
+        df = pd.read_csv(f"{self.dir}/emissions.csv")
+
+        # add row of 0's at top to buffer the diff
+        df = pd.concat([pd.DataFrame([0]*df.shape[1], index=df.columns).T, df], axis=0)
+        for col in ['duration', 'emissions', 'ram_energy', 'energy_consumed']:
+            df[col] = df[col].diff()
+        # drop buffer row
+        df = df.iloc[1: , :]
+
+        with open(f"{self.dir}/emissions.csv", 'w', encoding='utf-8') as file:
+            file.write(df.to_csv())
+
 
     @pytest.hookimpl(hookwrapper=True)
     def pytest_runtest_protocol(self, item, nextitem):
