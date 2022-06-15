@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   test:
+    name: Pytest
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,3 +25,10 @@ jobs:
         python3 -m pytest --carbon tests/test_mocks.py
         python3 -m pytest tests/test_codecarbon.py
 
+  black:
+    name: Black formatting check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: psf/black@stable
+      with:
+        options: "--check --verbose"
